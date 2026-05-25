@@ -9,20 +9,17 @@ Software architecture books applied to real systems. Each book produces one ship
 - Each lab closes with: what changed in the stack, metrics before/after, article hook ready
 - Spike code: TypeScript across all books — consistent stack, patterns mapped to other stacks in notes
 
-## Books
+## Books — first 5
+
+Selection rationale and full 28-book catalogue with scores: [`docs/adr/ADR-001-book-selection.md`](docs/adr/ADR-001-book-selection.md)
 
 | # | Book | Status | Artifact | Article |
 |---|------|--------|----------|---------|
-| 1 | [Fundamentals of Software Architecture](books/fundamentals-of-software-architecture/) | in progress | Architecture decision checklist + trade-off canvas | — |
-| 2 | [Software Architecture: The Hard Parts](books/software-architecture-the-hard-parts/) | queued | 3 ADRs on Synergym | — |
-| 3 | [Monolith to Microservices](books/monolith-to-microservices/) | queued | Strangler pattern roadmap on Synergym module | — |
-| 4 | [Building Event-Driven Microservices](books/building-event-driven-microservices/) | queued | Event catalog + consumer contracts | — |
-| 5 | [Software Architecture Metrics](books/software-architecture-metrics/) | queued | Dashboard with 5 operative metrics | — |
-
-## Sprint plan
-
-- W1: Fundamentals + Hard Parts
-- W2: Monolith to Microservices + EDA + Metrics
+| 1 | [Fundamentals of Software Architecture](books/fundamentals-of-software-architecture/) | in progress | Architecture decision checklist + 3 ADRs | — |
+| 2 | Learning Domain-Driven Design | queued | Bounded context map for Synergym + DDD glossary | — |
+| 3 | [Software Architecture: The Hard Parts](books/software-architecture-the-hard-parts/) | queued | 3 trade-off ADRs (consistency, coupling, deployability) | — |
+| 4 | Building Evolutionary Architectures | queued | Fitness function suite for Synergym | — |
+| 5 | [Monolith to Microservices](books/monolith-to-microservices/) | queued | Strangler fig roadmap on one Synergym module | — |
 
 ## Article format
 
