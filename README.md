@@ -1,12 +1,13 @@
-# book-labs
+# swbook-labs
 
-Architecture books applied to real systems. Each book produces one shipping-ready artifact and one article hook.
+Software architecture books applied to real systems. Each book produces one shipping-ready artifact and one article hook.
 
 ## Rules
 
-- 1 book = 1 artifact (code, diagram, or decision)
+- 1 book = 1 artifact (code spike, diagram, or decision)
 - No pure theory — every concept must map to a real problem in Synergym or a client project
 - Each lab closes with: what changed in the stack, metrics before/after, article hook ready
+- Spike code: TypeScript across all books — consistent stack, patterns mapped to other stacks in notes
 
 ## Books
 
