@@ -28,16 +28,19 @@ flowchart TD
     end
 
     Browser --> CTRL
+    CTRL --> VIEWS
     CTRL --> SVC
-    CTRL --> USER
-    SVC --> USER
     SVC --> MODELS
-    JOBS --> USER
     JOBS --> MODELS
     USER --> DB
     MODELS --> DB
 
-    linkStyle 0,1,2,3,4,5,6,7,8 stroke:#6366f1,stroke-width:2px
+    CTRL -.->|"layer skip"| USER
+    SVC -.->|"God Model"| USER
+    JOBS -.->|"layer skip"| USER
+
+    linkStyle 0,1,2,3,4,5,6 stroke:#0066ff,stroke-width:2px
+    linkStyle 7,8,9 stroke:#dc2626,stroke-width:2px,stroke-dasharray:5 5
 
     style PRESENTATION fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
     style BUSINESS fill:#ede9fe,stroke:#7c3aed,color:#3b0764
@@ -57,5 +60,5 @@ flowchart TD
 | Domain / Model | 17 ActiveRecord models | `User` at 730 LOC — role logic, unit conversion, preferences all in one model |
 | Persistence | Single PostgreSQL instance | No read replica, no explicit availability decision |
 
-**Red nodes = coupling debt accepted as known risk (documented in ADR-002).**
+**Blue arrows = normal layered flow. Red dashed arrows = layer skips (coupling violations).**
 The architecture is not wrong — the coupling discipline is the fix.

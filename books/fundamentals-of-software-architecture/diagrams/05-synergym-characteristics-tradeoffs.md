@@ -14,8 +14,6 @@ flowchart TD
 
     CHOSEN -- "paid for by deferring" --> DEFERRED
 
-    linkStyle 0 stroke:#6366f1,stroke-width:2px
-
     subgraph DEFERRED["Deferred — accepted trade-offs"]
         SCALE["Scalability"]
         ELAST["Elasticity"]
@@ -23,6 +21,8 @@ flowchart TD
         DEPLOY["Deployability"]
         MOD["Modularity"]
     end
+
+    linkStyle 0 stroke:#ff9933,stroke-width:2.5px
 
     style CHOSEN fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
     style DEFERRED fill:#fff3e0,stroke:#e65100,color:#3e2723
@@ -53,10 +53,5 @@ flowchart TD
 | Fault Tolerance | One process = full outage | SLA requirements from clients |
 | Deployability | No zero-downtime deploys | Second developer joins the team |
 | Modularity | God Models accepted as known debt | UserPreferences extraction first when ready |
-
-**The honest read:**
-- Green = the system actively works toward these
-- Orange = known risk, trigger defined, not a priority yet
-- Red = real cost, accepted deliberately
 
 **What changed after reading the book:** Before — these were unspoken assumptions. After — each one has a trigger condition that would cause a revisit. That's the difference between architecture that accumulated and architecture that was decided.

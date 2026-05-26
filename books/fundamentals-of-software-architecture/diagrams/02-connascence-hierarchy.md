@@ -21,11 +21,11 @@ flowchart LR
         CI["Identity"]
     end
 
-    STATIC -->|"stronger"| DYNAMIC
+    STATIC -->|"danger escalates"| DYNAMIC
 
-    linkStyle 0,1,2,3 stroke:#6366f1,stroke-width:2px
-    linkStyle 4,5,6 stroke:#e53935,stroke-width:2px
-    linkStyle 7 stroke:#b71c1c,stroke-width:3px
+    linkStyle 0,1,2,3 stroke:#475569,stroke-width:2px
+    linkStyle 4,5,6 stroke:#dc2626,stroke-width:2px
+    linkStyle 7 stroke:#ff9933,stroke-width:3px
 
     style STATIC fill:#f1f8e9,stroke:#558b2f,color:#1b5e20
     style DYNAMIC fill:#fce4ec,stroke:#880e4f,color:#880e4f
