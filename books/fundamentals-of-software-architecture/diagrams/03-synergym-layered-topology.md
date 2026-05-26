@@ -9,22 +9,22 @@ flowchart TD
     Browser["Browser / Mobile"]
 
     subgraph PRESENTATION["Presentation Layer"]
-        CTRL["Controllers\n30 controllers — avg 233 LOC\nDashboardsController: 874 LOC ⚠️"]
-        VIEWS["Views / ERB Templates"]
+        CTRL["Controllers"]
+        VIEWS["Views / ERB"]
     end
 
     subgraph BUSINESS["Business Layer"]
-        SVC["Service Objects\n10 services\nTranslationService: 561 LOC ⚠️"]
-        JOBS["Background Jobs\n6 jobs via SolidQueue"]
+        SVC["Service Objects"]
+        JOBS["Background Jobs"]
     end
 
     subgraph DOMAIN["Domain / Model Layer"]
-        USER["User Model\n730 LOC · 15+ associations ⚠️\nrole logic + unit conversion\n+ preferences all mixed in"]
-        MODELS["Other Models\n16 models"]
+        USER["User Model"]
+        MODELS["Other Models"]
     end
 
     subgraph PERSISTENCE["Persistence Layer"]
-        DB[("PostgreSQL\nsingle instance")]
+        DB[("PostgreSQL")]
     end
 
     Browser --> CTRL
@@ -36,6 +36,8 @@ flowchart TD
     JOBS --> MODELS
     USER --> DB
     MODELS --> DB
+
+    linkStyle 0,1,2,3,4,5,6,7,8 stroke:#6366f1,stroke-width:2px
 
     style PRESENTATION fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
     style BUSINESS fill:#ede9fe,stroke:#7c3aed,color:#3b0764
@@ -50,7 +52,7 @@ flowchart TD
 
 | Layer | What lives here | Coupling debt |
 |---|---|---|
-| Presentation | 30 controllers, ERB views | `DashboardsController` at 874 LOC — computes streak, achievements, scheduling in one class |
+| Presentation | 30 controllers (avg 233 LOC), ERB views | `DashboardsController` at 874 LOC — computes streak, achievements, scheduling in one class |
 | Business | 10 service objects, 6 background jobs | `TranslationService` at 561 LOC — mixes API calls, cache, locale lookup, fallback |
 | Domain / Model | 17 ActiveRecord models | `User` at 730 LOC — role logic, unit conversion, preferences all in one model |
 | Persistence | Single PostgreSQL instance | No read replica, no explicit availability decision |

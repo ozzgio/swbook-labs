@@ -14,6 +14,8 @@ flowchart TD
 
     CHOSEN -- "paid for by deferring" --> DEFERRED
 
+    linkStyle 0 stroke:#6366f1,stroke-width:2px
+
     subgraph DEFERRED["Deferred — accepted trade-offs"]
         SCALE["Scalability"]
         ELAST["Elasticity"]
