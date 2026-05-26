@@ -2,31 +2,29 @@
 
 **What this shows:** Synergym's actual architecture as a layered monolith, with the real coupling problems surfaced. This is the "before" picture the article is built around — not a made-up example, but the real system.
 
-**Key insight:** The architecture is correct for the current phase (solo developer, active feature development). The problem is not the *style* — it's the *discipline*. God Models and fat controllers are coupling debt that doesn't require changing the architecture style to fix.
+**Key insight:** The architecture style is correct for the current phase. The problem is not the *style* — it's the *discipline*. God Models and fat controllers are coupling debt that doesn't require a style migration to fix.
 
 ```mermaid
 flowchart TD
-    Browser(["🌐 Browser / Mobile"])
+    Browser["Browser / Mobile"]
 
-    subgraph RAILS["Synergym — Rails 8 Layered Monolith"]
-        subgraph PRESENTATION["Presentation Layer"]
-            CTRL["Controllers\n30 controllers · avg 233 LOC\n⚠️ DashboardsController: 874 LOC"]
-            VIEWS["Views\nERB Templates"]
-        end
+    subgraph PRESENTATION["Presentation Layer"]
+        CTRL["Controllers\n30 controllers — avg 233 LOC\nDashboardsController: 874 LOC ⚠️"]
+        VIEWS["Views / ERB Templates"]
+    end
 
-        subgraph BUSINESS["Business Layer"]
-            SVC["Service Objects\n10 services\n⚠️ TranslationService: 561 LOC"]
-            JOBS["Background Jobs\n6 jobs · SolidQueue"]
-        end
+    subgraph BUSINESS["Business Layer"]
+        SVC["Service Objects\n10 services\nTranslationService: 561 LOC ⚠️"]
+        JOBS["Background Jobs\n6 jobs via SolidQueue"]
+    end
 
-        subgraph DOMAIN["Domain / Model Layer"]
-            USER["User Model\n⚠️ 730 LOC\n⚠️ 15+ associations\n⚠️ role logic + unit conversion\n+ preference logic mixed in"]
-            MODELS["Other Models\n16 models"]
-        end
+    subgraph DOMAIN["Domain / Model Layer"]
+        USER["User Model\n730 LOC · 15+ associations ⚠️\nrole logic + unit conversion\n+ preferences all mixed in"]
+        MODELS["Other Models\n16 models"]
+    end
 
-        subgraph PERSISTENCE["Persistence Layer"]
-            DB[("PostgreSQL\nsingle instance\nno read replica")]
-        end
+    subgraph PERSISTENCE["Persistence Layer"]
+        DB[("PostgreSQL\nsingle instance")]
     end
 
     Browser --> CTRL
@@ -39,18 +37,23 @@ flowchart TD
     USER --> DB
     MODELS --> DB
 
-    style PRESENTATION fill:#e3f2fd,stroke:#1565c0
-    style BUSINESS fill:#f3e5f5,stroke:#6a1b9a
-    style DOMAIN fill:#fff8e1,stroke:#f57f17
-    style PERSISTENCE fill:#e8f5e9,stroke:#2e7d32
-    style USER fill:#ffccbc,stroke:#d84315
-    style CTRL fill:#ffccbc,stroke:#d84315
-    style SVC fill:#ffe0b2,stroke:#ef6c00
+    style PRESENTATION fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+    style BUSINESS fill:#ede9fe,stroke:#7c3aed,color:#3b0764
+    style DOMAIN fill:#fef9c3,stroke:#ca8a04,color:#422006
+    style PERSISTENCE fill:#dcfce7,stroke:#16a34a,color:#14532d
+    style USER fill:#fee2e2,stroke:#dc2626,color:#7f1d1d
+    style CTRL fill:#fee2e2,stroke:#dc2626,color:#7f1d1d
+    style SVC fill:#ffedd5,stroke:#ea580c,color:#7c2d12
 ```
 
-**The ⚠️ markers are coupling debt, not architecture failures.** The layered style is the right choice. The discipline of keeping layers clean is the fix — not a style migration.
+**Layer breakdown:**
 
-**Decisions made (from ADR-001, ADR-002):**
-- Layered monolith accepted — correct for solo dev, active feature phase
-- God Models accepted — with a documented extraction plan (UserPreferences value object)
-- Single PostgreSQL accepted — vertical scaling is the ceiling, but we haven't hit it
+| Layer | What lives here | Coupling debt |
+|---|---|---|
+| Presentation | 30 controllers, ERB views | `DashboardsController` at 874 LOC — computes streak, achievements, scheduling in one class |
+| Business | 10 service objects, 6 background jobs | `TranslationService` at 561 LOC — mixes API calls, cache, locale lookup, fallback |
+| Domain / Model | 17 ActiveRecord models | `User` at 730 LOC — role logic, unit conversion, preferences all in one model |
+| Persistence | Single PostgreSQL instance | No read replica, no explicit availability decision |
+
+**Red nodes = coupling debt accepted as known risk (documented in ADR-002).**
+The architecture is not wrong — the coupling discipline is the fix.
