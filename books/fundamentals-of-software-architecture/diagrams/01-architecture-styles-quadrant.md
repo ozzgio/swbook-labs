@@ -10,9 +10,9 @@ quadrantChart
     x-axis Low Complexity --> High Complexity
     y-axis Low Scalability --> High Scalability
     quadrant-1 Powerful but expensive
-    quadrant-2 Ideal (rare in practice)
+    quadrant-2 Ideal but rare
     quadrant-3 Start here
-    quadrant-4 Complex but not scalable (avoid)
+    quadrant-4 Complex without scale
     Layered Monolith: [0.12, 0.12]
     Pipeline: [0.18, 0.18]
     Microkernel: [0.28, 0.22]

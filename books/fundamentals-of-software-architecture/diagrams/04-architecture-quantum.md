@@ -6,21 +6,24 @@
 
 ```mermaid
 flowchart TB
-    subgraph Q1["Quantum 1 · Bidder Feedback\n🎯 Availability ●●●●● Performance ●●●●● Scalability ●●●●"]
-        BS["Bid Streamer\n(pub/sub fan-out)"]
+    subgraph Q1["Quantum 1 — Bidder Feedback"]
+        Q1C["Availability HIGH · Performance HIGH · Scalability HIGH"]
+        BS["Bid Streamer"]
         VC["Video Capture"]
-        VS["Video Streamer\n(live feed)"]
+        VS["Video Streamer"]
     end
 
-    subgraph Q2["Quantum 2 · Auctioneer\n🎯 Availability ●●●●● Reliability ●●●●● Security ●●●●●\n(highest bar — if auctioneer drops, nobody bids)"]
+    subgraph Q2["Quantum 2 — Auctioneer · HIGHEST BAR"]
+        Q2C["Availability HIGH · Reliability HIGH · Security HIGH"]
         AC["Auctioneer Capture"]
-        AS["Auction Session\n(controls the clock)"]
+        AS["Auction Session"]
     end
 
-    subgraph Q3["Quantum 3 · Bidder\n🎯 Reliability ●●●● Availability ●●●● Elasticity ●●●"]
+    subgraph Q3["Quantum 3 — Bidder"]
+        Q3C["Reliability HIGH · Availability HIGH · Elasticity MED"]
         BC["Bid Capture"]
         BT["Bid Tracker"]
-        PAY["Payment\n(async, 500ms budget)"]
+        PAY["Payment — async, 500ms budget"]
     end
 
     BC -- "async bid event" --> BS
@@ -33,6 +36,9 @@ flowchart TB
     style Q2 fill:#fce4ec,stroke:#880e4f
     style Q3 fill:#e8f5e9,stroke:#2e7d32
     style AS fill:#ef9a9a,stroke:#c62828
+    style Q1C fill:#e3f2fd,stroke:#1565c0,color:#1565c0
+    style Q2C fill:#fce4ec,stroke:#880e4f,color:#880e4f
+    style Q3C fill:#e8f5e9,stroke:#2e7d32,color:#2e7d32
 ```
 
 **Why the Auctioneer quantum has the highest bar:**
