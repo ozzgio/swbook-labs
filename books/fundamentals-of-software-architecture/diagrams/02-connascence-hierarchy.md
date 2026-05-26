@@ -6,35 +6,49 @@
 
 ```mermaid
 flowchart LR
-    subgraph STATIC["🔍 Static — visible at compile time"]
-        direction LR
-        CN["Name\nMethod renamed\neverywhere"] -->
-        CTP["Type\nShared type\nchanges"] -->
-        CM["Meaning\nMagic values\nconvention"] -->
-        CP["Position\nParameter\norder"] -->
-        CA["Algorithm\nShared\nalgorithm"]
+    subgraph STATIC["Static — visible at compile time"]
+        CN["Name"] -->
+        CTP["Type"] -->
+        CM["Meaning"] -->
+        CP["Position"] -->
+        CA["Algorithm"]
     end
 
-    subgraph DYNAMIC["⚡ Dynamic — only visible at runtime"]
-        direction LR
-        CE["Execution\nCall order\nmatters"] -->
-        CT["Timing\nRace\nconditions"] -->
-        CV["Values\nValues must\nmatch"] -->
-        CI["Identity\nSame object\nrequired"]
+    subgraph DYNAMIC["Dynamic — only visible at runtime"]
+        CE["Execution"] -->
+        CT["Timing"] -->
+        CV["Values"] -->
+        CI["Identity"]
     end
 
-    STATIC -->|stronger →| DYNAMIC
+    STATIC -->|"stronger"| DYNAMIC
 
+    style STATIC fill:#f1f8e9,stroke:#558b2f,color:#1b5e20
+    style DYNAMIC fill:#fce4ec,stroke:#880e4f,color:#880e4f
     style CN fill:#a5d6a7,stroke:#388e3c,color:#1b5e20
     style CTP fill:#c8e6c9,stroke:#388e3c,color:#1b5e20
     style CM fill:#fff9c4,stroke:#f9a825,color:#4e342e
     style CP fill:#ffe0b2,stroke:#ef6c00,color:#3e2723
     style CA fill:#ffccbc,stroke:#d84315,color:#3e2723
-    style CE fill:#ef9a9a,stroke:#c62828,color:#fff
+    style CE fill:#ef9a9a,stroke:#c62828,color:#7f0000
     style CT fill:#ef5350,stroke:#b71c1c,color:#fff
     style CV fill:#e53935,stroke:#b71c1c,color:#fff
     style CI fill:#b71c1c,stroke:#7f0000,color:#fff
 ```
+
+**Type breakdown:**
+
+| Type | Family | Risk | What changes together |
+|---|---|---|---|
+| Name | Static | Low | Method renamed everywhere |
+| Type | Static | Low | Shared type definition changes |
+| Meaning | Static | Medium | Magic values / conventions |
+| Position | Static | Medium-High | Parameter order |
+| Algorithm | Static | High | Shared algorithm implementation |
+| Execution | Dynamic | High | Call order matters |
+| Timing | Dynamic | Very High | Race conditions |
+| Values | Dynamic | Very High | Values must match at runtime |
+| Identity | Dynamic | Extreme | Same object instance required |
 
 **The two rules (Jim Weirich):**
 1. **Rule of Degree** — always convert a stronger form to a weaker one when you can
