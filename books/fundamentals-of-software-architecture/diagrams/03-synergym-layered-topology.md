@@ -56,7 +56,7 @@ flowchart TD
 | Layer | What lives here | Coupling debt |
 |---|---|---|
 | Presentation | 30 controllers (avg 233 LOC), ERB views | `DashboardsController` at 874 LOC — computes streak, achievements, scheduling in one class |
-| Business | 10 service objects, 6 background jobs | `TranslationService` at 561 LOC — mixes API calls, cache, locale lookup, fallback |
+| Business | 10 service objects, 6 background jobs | `TranslationService` at 1129 LOC — mixes API calls, cache, locale lookup, fallback |
 | Domain / Model | 17 ActiveRecord models | `User` at 730 LOC — role logic, unit conversion, preferences all in one model |
 | Persistence | Single PostgreSQL instance | No read replica, no explicit availability decision |
 
