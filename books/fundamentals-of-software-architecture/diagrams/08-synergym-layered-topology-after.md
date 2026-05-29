@@ -1,100 +1,48 @@
-# Synergym — Layered Architecture Topology (After PR #302)
+# Synergym — Five Modules Extracted from Two God Objects (PR #302)
 
-**What this shows:** The same layered monolith after the five-module extraction. Read alongside diagram 03 (before state): the style is unchanged, the coupling discipline is not.
+**What this shows:** Which components lived inside each God Object before extraction, and the runtime relationships between them after. This is the before→after told at the component level, not the layer level — read diagram 03 for the layer view.
 
-**Key insight:** No architecture migration needed. Two targeted extractions brought `DashboardsController` (874 → 382 LOC) and `TranslationService` (1129 → 383 LOC) inside the fitness function. An automated CI gate now prevents regression. Eight pre-existing files over 400 LOC remain — they are grandfathered debt (ADR-0005), not new violations.
+**Key insight:** Extraction did not change how the system works. It changed *where the logic lives*. `DashboardsController` still orchestrates the athlete dashboard — it now delegates to focused components instead of computing everything inline.
 
 ```mermaid
-flowchart TD
-    %% ── CI gate ─────────────────────────────────────────────────────────────
-    CI["🔒 CI Fitness Functions — ADR-0007\nLOC < 400  ·  Complexity < 10  ·  No layer skips\nEnforced on every PR — pre-existing debt grandfathered"]
+C4Component
+    title Five Modules Extracted from Two God Objects — PR #302
 
-    %% ── Presentation layer ──────────────────────────────────────────────────
-    subgraph PRESENTATION["Presentation Layer"]
-        DASH["DashboardsController\n874 → 382 LOC ✓"]
-        EX["ExercisesController\n445 → 397 LOC ✓"]
-        VIEWS["Views / ERB"]
-    end
+    Container_Boundary(b_ts, "TranslationService  ·  1129 → 383 LOC ✓") {
+        Component(ts, "TranslationService", "Service Object", "EN/IT routing and fallback — reduced to orchestration only")
+        Component(ent, "ExerciseNameTranslator", "Service Object", "EN→IT curated override table + rule-based compound names")
+        Component(swt, "SimpleWordTranslator", "Service Object", "Static word-level dictionaries (es↔en, it↔en)")
+    }
 
-    %% ── Business layer ──────────────────────────────────────────────────────
-    subgraph BUSINESS["Business Layer — five modules extracted (PR #302)"]
-        TS["TranslationService\n1129 → 383 LOC ✓"]
-        ENT["ExerciseNameTranslator  96 LOC"]
-        SWT["SimpleWordTranslator  48 LOC"]
-        WCT["WorkoutCompletionTracker"]
-        SC["StreakCalculator"]
-        WSH["WorkoutSchedulingHelper"]
-        EFB["ExerciseFilterBuilder"]
-        JOBS["Background Jobs"]
-    end
+    Container_Boundary(b_dash, "DashboardsController  ·  874 → 382 LOC ✓") {
+        Component(dash, "DashboardsController", "Rails Controller", "HTTP layer only — no computation")
+        Component(wct, "WorkoutCompletionTracker", "Service Object", "Session / cache lookup with log fallback for past dates")
+        Component(sc, "StreakCalculator", "Service Object", "Consecutive-workout streak over 90-day window")
+        Component(wsh, "WorkoutSchedulingHelper", "Helper Module", "Ordered upcoming workout days for dashboard display")
+    }
 
-    %% ── Domain layer ────────────────────────────────────────────────────────
-    subgraph DOMAIN["Domain / Model Layer — 8 files over 400 LOC (ADR-0005)"]
-        USER["user.rb  699 LOC\nAccepted debt — ADR-002"]
-        DEBT["+ 7 others over 400 LOC\nprogram_assignments_controller  639\napplication_helper  539\nprogram_importer  522\n..."]
-        MODELS["Other Models"]
-    end
+    Container_Boundary(b_ex, "ExercisesController  ·  445 → 397 LOC ✓") {
+        Component(ex, "ExercisesController", "Rails Controller", "HTTP layer only — no inline filter logic")
+        Component(efb, "ExerciseFilterBuilder", "Service Object", "Builds ActiveRecord scope from q / category / muscle_group params")
+    }
 
-    %% ── Persistence ────────────────────────────────────────────────────────
-    DB[("PostgreSQL")]
-
-    %% ── Connections ────────────────────────────────────────────────────────
-    CI -.->|"blocks regressions"| PRESENTATION
-    CI -.->|"blocks regressions"| BUSINESS
-    DASH --> VIEWS
-    EX --> VIEWS
-    DASH --> WCT
-    WCT --> SC
-    DASH --> WSH
-    EX --> EFB
-    TS --> ENT
-    TS --> SWT
-    DASH --> MODELS
-    EX --> MODELS
-    JOBS --> MODELS
-    MODELS --> DB
-    USER --> DB
-    DASH -.->|"documented debt — ADR-002"| USER
-
-    %% ── Styles ─────────────────────────────────────────────────────────────
-    classDef green fill:#bbf7d0,stroke:#16a34a,color:#14532d
-    classDef violet fill:#ede9fe,stroke:#7c3aed,color:#3b0764
-    classDef amber fill:#fef3c7,stroke:#f59e0b,color:#78350f
-    classDef debt fill:#fee2e2,stroke:#dc2626,color:#7f1d1d
-
-    class DASH,EX,TS green
-    class ENT,SWT,WCT,SC,WSH,EFB,JOBS violet
-    class USER,DEBT amber
-
-    style CI fill:#dcfce7,stroke:#16a34a,color:#14532d
-    style PRESENTATION fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
-    style BUSINESS fill:#f5f3ff,stroke:#7c3aed,color:#3b0764
-    style DOMAIN fill:#fefce8,stroke:#ca8a04,color:#422006
-    style DB fill:#dcfce7,stroke:#16a34a,color:#14532d
-    style MODELS fill:#fef9c3,stroke:#ca8a04,color:#422006
-    style VIEWS fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+    Rel(ts, ent, "delegates EN→IT exercise name lookup")
+    Rel(ts, swt, "delegates word-level dictionary lookup")
+    Rel(dash, wct, "delegates completion state check")
+    Rel(wct, sc, "provides completed dates for streak")
+    Rel(dash, wsh, "delegates upcoming workout ordering")
+    Rel(ex, efb, "delegates filter scope building")
 ```
 
-**What changed (before → after):**
+**Extraction summary:**
 
-| Component | Before | After | How |
-|---|---|---|---|
-| `DashboardsController` | 874 LOC — streak, scheduling, completions inline | 382 LOC ✓ | Extracted `WorkoutCompletionTracker`, `StreakCalculator`, `WorkoutSchedulingHelper` |
-| `TranslationService` | 1129 LOC — API calls, cache, fallback mixed | 383 LOC ✓ | Extracted `ExerciseNameTranslator`, `SimpleWordTranslator` |
-| `ExercisesController` | 445 LOC | 397 LOC ✓ | Extracted `ExerciseFilterBuilder` |
-| Architectural governance | None | CI gate on every PR | 3 automated checks — ADR-0007 |
-
-**Pre-existing debt not addressed (ADR-0005 — grandfathered, not blocked by CI):**
-
-| File | LOC | Notes |
+| Extracted from | New component | Single responsibility |
 |---|---|---|
-| `user.rb` | 699 | Accepted — extraction plan in ADR-002 |
-| `trainer/program_assignments_controller.rb` | 639 | Undocumented debt |
-| `application_helper.rb` | 539 | Undocumented debt |
-| `program_importer.rb` | 522 | Undocumented debt |
-| `workout_exercises_controller.rb` | 436 | Undocumented debt |
-| `production_monitoring.rb` | 420 | Undocumented debt |
-| `wger_exercise_importer.rb` | 419 | Undocumented debt |
-| `athlete/workout_days_controller.rb` | 410 | Undocumented debt |
+| `TranslationService` | `ExerciseNameTranslator` | EN→IT exercise name: curated overrides + rule-based compound translation |
+| `TranslationService` | `SimpleWordTranslator` | Static word dictionaries (es↔en, it↔en) + movement/prefix constants |
+| `DashboardsController` | `WorkoutCompletionTracker` | Completion state: session → cache → log fallback chain |
+| `DashboardsController` | `StreakCalculator` | Streak computation over 90-day lookback |
+| `DashboardsController` → `WorkoutSchedulingHelper` | `ordered_upcoming_workout_days` | Upcoming workout ordering with completion filtering |
+| `ExercisesController` | `ExerciseFilterBuilder` | ActiveRecord scope from HTTP filter params |
 
-The CI gate prevents new violations from entering. It does not retroactively force fixes on pre-existing debt — that is ADR-0005's explicit decision.
+**What the CI gate now enforces (see diagram 06):** any future PR that touches these files and pushes them back over 400 LOC, introduces a method with cyclomatic complexity > 10, or adds a direct model query from a controller will fail CI before merge.
