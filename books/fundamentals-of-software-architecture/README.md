@@ -16,7 +16,7 @@ Reading this book forced the first explicit decisions. Layered monolith stays fo
 
 ## Diagrams
 
-Mermaid diagrams covering the architecture styles quadrant, connascence hierarchy, Synergym layered topology before and after, fitness functions, and trade-off canvas. See [diagrams/](diagrams/).
+Mermaid diagrams covering the architecture styles quadrant, connascence hierarchy, Synergym layered topology before and after, fitness functions, trade-off canvas, and component map (technical partitioning + implicit domain bleeding). See [diagrams/](diagrams/).
 
 ## Running the spike
 
