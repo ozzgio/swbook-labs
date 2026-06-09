@@ -46,10 +46,9 @@ Before → After. If nothing shipped yet, say so.
 |--------|--------|-------|
 | — | — | — |
 
-## Article hook
+## When done
 
-**Working title:** [Applying X from Y to Z]
-
-**Angle:** One sentence — what is the argument, not the topic.
-
-**Proof:** What artifact / code / decision proves the point.
+Update the per-book `README.md`:
+- Fill in Problem, Decision, Artifacts table
+- Add article link once published
+- Update root README table: status → done, Article → link

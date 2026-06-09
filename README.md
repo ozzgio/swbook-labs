@@ -1,28 +1,25 @@
 # swbook-labs
 
-Software architecture books applied to real systems. Each book produces one shipping-ready artifact and one article hook.
+Reading software architecture books is easy. Applying them is where most of the value gets lost.
 
-## Rules
+This repo is a study system: each book produces one runnable TypeScript spike, one set of architecture artifacts, and one published article. Everything is applied to real codebases — a Rails 8 SaaS ([synergym.fit](https://synergym.fit)) and a .NET enterprise system at the day job.
 
-- 1 book = 1 artifact (code spike, diagram, or decision)
-- No pure theory — every concept must map to a real problem in Synergym or a client project
-- Each lab closes with: what changed in the stack, metrics before/after, article hook ready
-- Spike code: TypeScript across all books — consistent stack, patterns mapped to other stacks in notes
+A lab is not done when the notes are written. It closes when the artifact ships and the article is published.
 
-## Books — first 5
+## What each lab produces
 
-Selection rationale and full 28-book catalogue with scores: [`docs/adr/ADR-001-book-selection.md`](docs/adr/ADR-001-book-selection.md)
+- **Spike** — a self-contained TypeScript program with tests, demonstrating one architectural pattern from the book. Generic domain language (User, Order, Product), no private code. Runs with `npm install && npm test`.
+- **Artifact** — ADRs, a decision checklist, or a migration roadmap applied to a real system, not a synthetic example.
+- **Article** — published on [ozzo.blog](https://ozzo.blog) in the series *Architecture in Practice*.
 
-| # | Book | Status | Artifact | Article |
-|---|------|--------|----------|---------|
-| 1 | [Fundamentals of Software Architecture](books/fundamentals-of-software-architecture/) | in progress | Architecture decision checklist + 3 ADRs | — |
-| 2 | Learning Domain-Driven Design | queued | Bounded context map for Synergym + DDD glossary | — |
-| 3 | [Software Architecture: The Hard Parts](books/software-architecture-the-hard-parts/) | queued | 3 trade-off ADRs (consistency, coupling, deployability) | — |
-| 4 | Building Evolutionary Architectures | queued | Fitness function suite for Synergym | — |
-| 5 | [Monolith to Microservices](books/monolith-to-microservices/) | queued | Strangler fig roadmap on one Synergym module | — |
+## Books
 
-## Article format
+| # | Book | Status | Article |
+|---|------|--------|---------|
+| 1 | [Fundamentals of Software Architecture](books/fundamentals-of-software-architecture/) | done | [Every Rails App Has an Architecture. Mine Just Didn't Know It Yet.](https://ozzo.blog/articles/rails-architecture-accumulated-by-default) |
+| 2 | [Learning Domain-Driven Design](books/learning-domain-driven-design/) | queued | — |
+| 3 | Software Architecture: The Hard Parts | queued | — |
+| 4 | Building Evolutionary Architectures | queued | — |
+| 5 | Monolith to Microservices | queued | — |
 
-Title formula: **Applying [Concept] from [Book] to [Real System]**
-
-Series: Architecture in Practice (ozzo.blog)
+Book selection rationale and full 28-book scored catalogue: [`docs/adr/ADR-001-book-selection.md`](docs/adr/ADR-001-book-selection.md)
