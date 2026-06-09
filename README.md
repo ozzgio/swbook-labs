@@ -1,16 +1,21 @@
 # swbook-labs
 
-Reading software architecture books is easy. Applying them is where most of the value gets lost.
+I read software architecture books and apply the concepts to real codebases. Each book closes with a runnable TypeScript spike, a set of architecture artifacts, and a published article.
 
-This repo is a study system: each book produces one runnable TypeScript spike, one set of architecture artifacts, and one published article. Everything is applied to real codebases — a Rails 8 SaaS ([synergym.fit](https://synergym.fit)) and a .NET enterprise system at the day job.
+The two systems: Synergym, a Rails 8 SaaS, and a .NET enterprise codebase at my day job.
 
 A lab is not done when the notes are written. It closes when the artifact ships and the article is published.
 
 ## What each lab produces
 
-- **Spike** — a self-contained TypeScript program with tests, demonstrating one architectural pattern from the book. Generic domain language (User, Order, Product), no private code. Runs with `npm install && npm test`.
-- **Artifact** — ADRs, a decision checklist, or a migration roadmap applied to a real system, not a synthetic example.
-- **Article** — published on [ozzo.blog](https://ozzo.blog) in the series *Architecture in Practice*.
+**Spike**
+A self-contained TypeScript program with tests. Demonstrates one architectural pattern from the book. Uses generic domain language so there is no private code in the repo. Runs with `npm install && npm test`.
+
+**Artifact**
+ADRs, a decision checklist, or a migration roadmap. Applied to one of the two real codebases above.
+
+**Article**
+Published on [ozzo.blog](https://ozzo.blog) in the series *Architecture in Practice*.
 
 ## Books
 
