@@ -1,7 +1,7 @@
 # ADR-003: Accept At-Most-Once Job Delivery for Current Volume
 
 **Date:** 2026-05-17
-**Status:** accepted
+**Status:** implemented — see outcome below
 **System:** Synergym (synergym_next)
 
 ## Context
@@ -88,3 +88,22 @@ Rationale: Option A is the current state but not a sustainable decision — it i
 - Book: Fundamentals of Software Architecture, Ch. 4 (Architecture Characteristics — Reliability, Fault Tolerance)
 - Code: `app/jobs/program_assignment_expiration_job.rb`, `app/jobs/trainer_invite_link_expiration_job.rb`, `app/jobs/client_invitation_reminder_job.rb`
 - Next: implement Phase 1 idempotency guards in Synergym
+
+---
+
+## Outcome (2026-06-17)
+
+**Both phases implemented — delivery model is now at-least-once with idempotency.**
+
+**Phase 1 — Idempotency guards:** All four jobs are now safe to retry. Idempotency is achieved via two patterns:
+- **Query-scope idempotency** (expiration jobs): `ProgramAssignment.active.expiring_today` and `TrainerInviteLink.active.where("expires_at <= ?", Time.current)` are naturally idempotent — rerunning the job against an already-expired record is a no-op because the record no longer matches the scope.
+- **Field-presence idempotency** (`TranslateExerciseJob`): "Translate only missing fields so task reruns are fast and idempotent" — skips fields already populated. Explicit comment in code.
+
+**Phase 2 — Retry config + monitoring:** All three scheduled jobs now include:
+- `retry_on StandardError, wait: :exponentially_longer, attempts: 3`
+- `discard_on ActiveRecord::RecordNotFound` with logged discard
+- `include JobMonitoring` — tracks job start, success, and failure with execution time and metadata
+
+**What diverged from the plan:** The explicit `return unless assignment&.active?` guard pattern suggested in the ADR was not used. Query-scope filtering achieves the same safety guarantee without a per-record guard, and is idiomatic for Rails batch jobs. The planned Slack alert was replaced by `JobMonitoring`, which is more structured.
+
+**Open:** No dead-letter queue or permanent-failure alert path. Still requires manual investigation via SolidQueue dashboard or DB query on stuck jobs. Not yet a pain point.

@@ -1,7 +1,7 @@
 # ADR-002: Accept User God Model Now, Extract UserPreferences Later
 
 **Date:** 2026-05-17
-**Status:** accepted
+**Status:** superseded by outcome — see below
 **System:** Synergym (synergym_next)
 
 ## Context
@@ -78,3 +78,24 @@ Rationale: The cost of extraction is real and immediate. The benefit is future m
 - Book: Fundamentals of Software Architecture, Ch. 3 (Modularity, Coupling, Connascence)
 - ADR-001: Architecture style decision
 - Code: `app/models/user.rb:1-730`, `app/policies/`, `app/helpers/application_helper.rb`
+
+---
+
+## Outcome (2026-06-17)
+
+**What actually shipped — different approach, better result.**
+
+The `UserPreferences` table extraction planned above did not happen. Instead, `user.rb` went from 730 → 336 LOC via two orthogonal techniques:
+
+**1. Concerns-based behavior extraction.** Five concerns were extracted and included:
+- `OauthAuthenticatable` — OAuth login, Google OmniAuth logic
+- `ClientConnectable` — trainer/athlete connection predicates
+- `Onboardable` — onboarding state machine and step logic
+- `SoftDeletable` — paranoia-style soft-delete behavior
+- `EmailVerifiable` — email verification flow
+
+**2. `UnitSystem` value object.** Unit conversion logic and unit validation constants moved to `app/value_objects/unit_system.rb`. User delegates unit predicate methods to an on-the-fly `UnitSystem` instance. This is a tighter outcome than the planned `UnitConverter` service object — it's a proper immutable value object.
+
+**What did NOT happen:** The preference columns (`weight_unit`, `distance_unit`, `preferred_locale`, `workouts_per_day`, etc.) remain on the `users` table. `UserPreferences` as a separate model was never created. The `delegate :weight_unit ... to: :preferences` migration path from the plan above is still valid if the trigger conditions are met.
+
+**Trigger conditions remain in force:** `user.rb` is at 336 LOC and not under pressure. The original triggers (settings import/export feature, second developer, painful test suite) have not been hit.
