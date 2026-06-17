@@ -142,3 +142,20 @@ Specifically:
 - ADR-001: Subdomain classification (identifies core vs. supporting)
 - ADR-003: Business logic pattern selection per context
 - Code: `app/models/program_assignment.rb`, `app/models/client_connection.rb`, `app/models/program.rb`
+
+---
+
+## Amendment — 2026-06-17: Namespacing question closed
+
+**Question this closes:** the original decision explicitly deferred whether to introduce directory/module namespacing (`app/models/coaching/`, `app/models/library/`, Ruby modules, or Rails engines) to enforce these boundaries in code.
+
+**Decision: no namespacing. Enforced by an architecture spec instead.** `spec/architecture/bounded_context_spec.rb` reads each context's model source and fails the suite if Library or Content files hardcode a Coaching status literal or reference a model outside their context.
+
+**Rationale:**
+- Module namespacing (e.g. `Coaching::ProgramAssignment`) would require renaming every reference across controllers, views, routes, mailers, jobs, serializers, and the spec/factory files for two classes — for a boundary that today has exactly two real crossing points (`Program#update_status_based_on_assignments!` reading Coaching's status, `ProgramAssignment#program_duration_weeks` reading Library's `duration_weeks`). The rename's blast radius is disproportionate to the enforcement gained.
+- The architecture spec gives the same regression protection — a boundary violation fails CI — without the rename. It already caught a real violation during this session: `Program` was hardcoding `ProgramAssignment`'s `status: "active"` literal directly; fixed by routing through `ProgramAssignment.active` instead, so Coaching alone owns the meaning of "active."
+- Rails engines are out of scope — Synergym is a monolith by design (Book 1, ADR-001 in `fundamentals-of-software-architecture`), and engines solve a deployment-boundary problem this system doesn't have.
+
+**Revisit when:** Coaching needs to be extracted into its own deployable service, or a third real cross-context coupling point appears beyond the two known today. At that point the cost of namespacing is paid once anyway, as part of the extraction.
+
+**Code:** `spec/architecture/bounded_context_spec.rb`, `app/models/program.rb`, `app/models/program_assignment.rb`
